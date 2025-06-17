@@ -38,7 +38,7 @@ namespace Lab_4.Classes
         public string ManagerFullName => ToString();
         public override string ToString()
         {
-            return $"{Name} {Surname}, народжений {BirthDate:dd.MM.yyyy}";
+            return $"{Name} {Surname}, {BirthDate:dd.MM.yyyy}";
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

@@ -11,7 +11,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Lab_4.Enum;
 using Lab_4.Classes;
-using static System.Collections.Specialized.BitVector32;
+using lab4;
 
 namespace Lab_4
 {
@@ -45,15 +45,54 @@ namespace Lab_4
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
+            ClubDetailsWindow detailsWindow = new ClubDetailsWindow();
+            if (detailsWindow.ShowDialog() == true)
+            {
+                if (detailsWindow.CurrentCircle != null)
+                {
+                    _center.AddClub(detailsWindow.CurrentCircle);
+                    MessageBox.Show("Гурток успішно додано!", "Додавання гуртка", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
         }
 
         private void Edit_Click(object sender, RoutedEventArgs e)
         {
+            if (ClubsListView.SelectedItem is Circle selectedCircle)
+            {
+                ClubDetailsWindow detailsWindow = new ClubDetailsWindow(selectedCircle);
+                if (detailsWindow.ShowDialog() == true)
+                {
+                    MessageBox.Show("Гурток успішно відредаговано!", "Редагування гуртка", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Будь ласка, оберіть гурток для редагування.", "Редагувати гурток", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
+            if (ClubsListView.SelectedItem is Circle selectedCircle)
+            {
+                MessageBoxResult result = MessageBox.Show(
+                    $"Ви впевнені, що хочете видалити гурток '{selectedCircle.Name}'?",
+                    "Видалити гурток",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question
+                );
 
+                if (result == MessageBoxResult.Yes)
+                {
+                    _center.RemoveClub(selectedCircle);
+                    MessageBox.Show("Гурток успішно видалено!", "Видалення гуртка", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Будь ласка, оберіть гурток для видалення.", "Видалити гурток", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
     }
 }

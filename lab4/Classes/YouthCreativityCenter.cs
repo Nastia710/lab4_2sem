@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
@@ -12,11 +13,11 @@ namespace Lab_4.Classes
     public class YouthCreativityCenter : INotifyPropertyChanged
     {
         private string _address;
-        private List<Circle> _circles;
+        private ObservableCollection<Circle> _circles;
         public YouthCreativityCenter(string address)
         {
             Address = address;
-            Circles = new List<Circle>();
+            Circles = new ObservableCollection<Circle>();
         }
 
         public string Address
@@ -25,7 +26,7 @@ namespace Lab_4.Classes
             set { _address = value; OnPropertyChanged(nameof(Address)); }
         }
 
-        public List<Circle> Circles
+        public ObservableCollection<Circle> Circles
         {
             get => _circles;
             set
@@ -70,9 +71,7 @@ namespace Lab_4.Classes
                 totalStudents += circle.StudentsCount;
             }
 
-            return $"Будинок дитячої творчості\n" +
-                   $"Адреса: {Address}\n" +
-                   $"Загальна кількість учнів: {totalStudents}";
+            return $"Будинок дитячої творчості Адреса: {Address} Загальна кількість учнів: {totalStudents}";
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

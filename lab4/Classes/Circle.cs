@@ -1,4 +1,5 @@
 ﻿using Lab_4.Enum;
+using Lab_4.Classes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

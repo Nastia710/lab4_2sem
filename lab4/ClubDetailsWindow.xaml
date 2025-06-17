@@ -1,0 +1,59 @@
+﻿<Window x:Class="Lab_4.ClubDetailsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lab_4.Enum"
+        mc:Ignorable="d"
+        Title="Деталі гуртка" Height="450" Width="400"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Назва гуртка:" Margin="0,5"/>
+        <TextBox x:Name="NameTextBox" Grid.Row="0" Grid.Column="1" Margin="0,5"/>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Секція:" Margin="0,5"/>
+        <ComboBox x:Name="SectionComboBox" Grid.Row="1" Grid.Column="1" Margin="0,5"/>
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Керівник (Ім'я):" Margin="0,5"/>
+        <TextBox x:Name="ManagerNameTextBox" Grid.Row="2" Grid.Column="1" Margin="0,5"/>
+
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Керівник (Прізвище):" Margin="0,5"/>
+        <TextBox x:Name="ManagerSurnameTextBox" Grid.Row="3" Grid.Column="1" Margin="0,5"/>
+
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Керівник (Дата народження):" Margin="0,5"/>
+        <DatePicker x:Name="ManagerBirthDatePicker" Grid.Row="4" Grid.Column="1" Margin="0,5"/>
+
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Вартість (грн):" Margin="0,5"/>
+        <TextBox x:Name="FeeTextBox" Grid.Row="5" Grid.Column="1" Margin="0,5"/>
+
+        <TextBlock Grid.Row="6" Grid.Column="0" Text="Занять на місяць:" Margin="0,5"/>
+        <TextBox x:Name="LessonsPerMonthTextBox" Grid.Row="6" Grid.Column="1" Margin="0,5"/>
+
+        <TextBlock Grid.Row="7" Grid.Column="0" Text="Кількість учнів:" Margin="0,5"/>
+        <TextBox x:Name="StudentsCountTextBox" Grid.Row="7" Grid.Column="1" Margin="0,5"/>
+
+        <StackPanel Grid.Row="11" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
+            <Button Content="Зберегти" Width="80" Margin="5" Click="Save_Click"/>
+            <Button Content="Скасувати" Width="80" Margin="5" Click="Cancel_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
