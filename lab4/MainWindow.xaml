@@ -1,0 +1,36 @@
+﻿<Window x:Class="Lab_4.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Будинок дитячої творчості" Height="500" Width="750" Background="#FFEFF1FF">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Назва -->
+        <TextBlock Text="Будинок дитячої творчості" FontSize="22" FontWeight="Bold"
+                   HorizontalAlignment="Center" Margin="0,0,0,10"/>
+
+        <!-- Список гуртків -->
+        <ListView x:Name="ClubsListView" Grid.Row="1" Margin="0,0,0,10" SelectionMode="Single">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Назва гуртка" DisplayMemberBinding="{Binding Name}" Width="200"/>
+                    <GridViewColumn Header="Секція" DisplayMemberBinding="{Binding Section}" Width="160"/>
+                    <GridViewColumn Header="Керівник" 
+                                    DisplayMemberBinding="{Binding ManagerFullName}" Width="210"/>
+                    <GridViewColumn Header="К-сть учнів" DisplayMemberBinding="{Binding StudentsCount}" Width="155"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <!-- Кнопки -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="Додати" Width="100" Margin="5" Click="Add_Click" Height="25"/>
+            <Button Content="Редагувати" Width="100" Margin="5" Click="Edit_Click"/>
+            <Button Content="Видалити" Width="100" Margin="5" Click="Delete_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
