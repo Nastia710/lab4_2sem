@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Windows;
 using Lab_4.Classes;
 using Lab_4.Enum;
+using System.Text.RegularExpressions;
 
 namespace Lab_4
 {
@@ -11,6 +12,12 @@ namespace Lab_4
     /// </summary>
     public partial class ClubDetailsWindow : Window
     {
+        private const string nameReg = @"^[А-ЯІЇЄҐ][а-яіїєґ']*(?:-[А-ЯІЇЄҐ][а-яіїєґ']*)?$";
+        private const int minAge = 25;
+        private const int maxAge = 95;
+        private const int minLessons = 1;
+        private const int maxLessons = 20;
+
         public Circle CurrentCircle { get; private set; }
 
         public ClubDetailsWindow()
@@ -55,6 +62,59 @@ namespace Lab_4
             }
         }
 
+        private bool ValidateName(string name, string fieldName)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                MessageBox.Show($"Будь ласка, введіть {fieldName}.", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (!Regex.IsMatch(name, nameReg))
+            {
+                MessageBox.Show($"{fieldName} повинен починатися з великої літери, містити тільки українські літери, може містити один апостроф на слово та один дефіс між двома словами.", 
+                    "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool ValidateBirthDate(DateTime birthDate)
+        {
+            if (birthDate > DateTime.Now)
+            {
+                MessageBox.Show("Дата народження не може бути в майбутньому.", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            int age = DateTime.Now.Year - birthDate.Year;
+            if (birthDate.Date > DateTime.Now.AddYears(-age)) age--;
+
+            if (age < minAge)
+            {
+                MessageBox.Show($"Вік керівника повинен бути більшим за {minAge} років.", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+            if (age > maxAge)
+            {
+                MessageBox.Show($"Вік керівника не повинен бути більшим за {maxAge} років.", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool ValidateLessonsPerMonth(int lessons)
+        {
+            if (lessons < minLessons || lessons > maxLessons)
+            {
+                MessageBox.Show($"Кількість занять на місяць може бути в межах від {minLessons} до {maxLessons}.", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+            return true;
+        }
+
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(NameTextBox.Text) ||
@@ -70,16 +130,34 @@ namespace Lab_4
                 return;
             }
 
+            if (!ValidateName(ManagerNameTextBox.Text, "Ім'я керівника") ||
+                !ValidateName(ManagerSurnameTextBox.Text, "Прізвище керівника"))
+            {
+                return;
+            }
+
+            if (!ValidateBirthDate(ManagerBirthDatePicker.SelectedDate.Value))
+            {
+                return;
+            }
+
             if (!int.TryParse(FeeTextBox.Text, out int fee) || fee <= 0)
             {
                 MessageBox.Show("Будь ласка, введіть коректну вартість (ціле позитивне число).", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            if (!int.TryParse(LessonsPerMonthTextBox.Text, out int lessons) || lessons <= 0)
+
+            if (!int.TryParse(LessonsPerMonthTextBox.Text, out int lessons))
             {
-                MessageBox.Show("Будь ласка, введіть коректну кількість занять на місяць (ціле позитивне число).", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Будь ласка, введіть коректну кількість занять на місяць (ціле число).", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+
+            if (!ValidateLessonsPerMonth(lessons))
+            {
+                return;
+            }
+
             if (!int.TryParse(StudentsCountTextBox.Text, out int students) || students <= 0)
             {
                 MessageBox.Show("Будь ласка, введіть коректну кількість учнів (ціле позитивне число).", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);

@@ -18,10 +18,31 @@
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Назва гуртка" DisplayMemberBinding="{Binding Name}" Width="200"/>
-                    <GridViewColumn Header="Секція" DisplayMemberBinding="{Binding Section}" Width="160"/>
-                    <GridViewColumn Header="Керівник" 
-                                    DisplayMemberBinding="{Binding Manager.ManagerFullName}" Width="260"/>
-                    <GridViewColumn Header="К-сть учнів" DisplayMemberBinding="{Binding StudentsCount}" Width="100"/>
+                    <GridViewColumn Header="Секція" Width="160">
+                        <GridViewColumn.HeaderContainerStyle>
+                            <Style TargetType="{x:Type GridViewColumnHeader}">
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            </Style>
+                        </GridViewColumn.HeaderContainerStyle>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Section}" TextAlignment="Center" Width="150"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Керівник" DisplayMemberBinding="{Binding Manager.ManagerFullName}" Width="260"/>
+                    <GridViewColumn Header="К-сть учнів" Width="100">
+                        <GridViewColumn.HeaderContainerStyle>
+                            <Style TargetType="{x:Type GridViewColumnHeader}">
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            </Style>
+                        </GridViewColumn.HeaderContainerStyle>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding StudentsCount}" TextAlignment="Center" Width="90"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
