@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Windows;
 using Lab_4.Classes;
 using Lab_4.Enum;
-using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Lab_4
 {
@@ -12,11 +13,11 @@ namespace Lab_4
     /// </summary>
     public partial class ClubDetailsWindow : Window
     {
-        private const string nameReg = @"^[А-ЯІЇЄҐ][а-яіїєґ']*(?:-[А-ЯІЇЄҐ][а-яіїєґ']*)?$";
+        /*private const string nameReg = @"^[А-ЯІЇЄҐ][а-яіїєґ']*(?:-[А-ЯІЇЄҐ][а-яіїєґ']*)?$";
         private const int minAge = 25;
         private const int maxAge = 95;
         private const int minLessons = 1;
-        private const int maxLessons = 20;
+        private const int maxLessons = 20;*/
 
         public Circle CurrentCircle { get; private set; }
 
@@ -24,6 +25,8 @@ namespace Lab_4
         {
             InitializeComponent();
             this.Title = "Додати новий гурток";
+            CurrentCircle = new Circle("", default(Sections), new Manager("", "", DateTime.Now), 0, 0, 0);
+            this.DataContext = CurrentCircle;
             ManagerBirthDatePicker.SelectedDate = DateTime.Now;
             PopulateSectionComboBox();
         }
@@ -32,6 +35,7 @@ namespace Lab_4
         {
             this.Title = "Редагувати гурток";
             CurrentCircle = circleToEdit;
+            this.DataContext = CurrentCircle;
             LoadCircleData(circleToEdit);
         }
 
@@ -42,7 +46,7 @@ namespace Lab_4
 
         private void LoadCircleData(Circle circle)
         {
-            NameTextBox.Text = circle.Name;
+            /*NameTextBox.Text = circle.Name;
             SectionComboBox.SelectedItem = circle.Section;
             FeeTextBox.Text = circle.Fee.ToString();
             LessonsPerMonthTextBox.Text = circle.LessonsPerMonth.ToString();
@@ -59,137 +63,90 @@ namespace Lab_4
                 ManagerNameTextBox.Text = string.Empty;
                 ManagerSurnameTextBox.Text = string.Empty;
                 ManagerBirthDatePicker.SelectedDate = null;
+            }*/
+
+            if (circle.Manager == null)
+            {
+                circle.Manager = new Manager("", "", DateTime.Now);
             }
         }
 
-        private bool ValidateName(string name, string fieldName)
+        /*private bool ValidateModel(object model)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            var results = new List<ValidationResult>();
+            var context = new ValidationContext(model);
+            if (!Validator.TryValidateObject(model, context, results, true))
             {
-                MessageBox.Show($"Будь ласка, введіть {fieldName}.", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            if (!Regex.IsMatch(name, nameReg))
-            {
-                MessageBox.Show($"{fieldName} повинен починатися з великої літери, містити тільки українські літери, може містити один апостроф на слово та один дефіс між двома словами.", 
-                    "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool ValidateBirthDate(DateTime birthDate)
-        {
-            if (birthDate > DateTime.Now)
-            {
-                MessageBox.Show("Дата народження не може бути в майбутньому.", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            int age = DateTime.Now.Year - birthDate.Year;
-            if (birthDate.Date > DateTime.Now.AddYears(-age)) age--;
-
-            if (age < minAge)
-            {
-                MessageBox.Show($"Вік керівника повинен бути більшим за {minAge} років.", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-            if (age > maxAge)
-            {
-                MessageBox.Show($"Вік керівника не повинен бути більшим за {maxAge} років.", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool ValidateLessonsPerMonth(int lessons)
-        {
-            if (lessons < minLessons || lessons > maxLessons)
-            {
-                MessageBox.Show($"Кількість занять на місяць може бути в межах від {minLessons} до {maxLessons}.", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
+                foreach (var error in results)
+                {
+                    MessageBox.Show(error.ErrorMessage, "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
                 return false;
             }
             return true;
-        }
+        }*/
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(NameTextBox.Text) ||
-                SectionComboBox.SelectedItem == null ||
-                string.IsNullOrWhiteSpace(FeeTextBox.Text) ||
-                string.IsNullOrWhiteSpace(LessonsPerMonthTextBox.Text) ||
-                string.IsNullOrWhiteSpace(StudentsCountTextBox.Text) ||
-                string.IsNullOrWhiteSpace(ManagerNameTextBox.Text) ||
-                string.IsNullOrWhiteSpace(ManagerSurnameTextBox.Text) ||
-                ManagerBirthDatePicker.SelectedDate == null)
+            var contextCircle = new ValidationContext(CurrentCircle, null, null);
+            var resultsCircle = new List<ValidationResult>();
+            bool isCircleValid = Validator.TryValidateObject(CurrentCircle, contextCircle, resultsCircle, true);
+
+            var contextManager = new ValidationContext(CurrentCircle.Manager, null, null);
+            var resultsManager = new List<ValidationResult>();
+            bool isManagerValid = Validator.TryValidateObject(CurrentCircle.Manager, contextManager, resultsManager, true);
+
+
+            if (!isCircleValid || !isManagerValid)
             {
-                MessageBox.Show("Будь ласка, заповніть усі поля.", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
+                string errors = string.Join(Environment.NewLine, resultsCircle.Select(r => r.ErrorMessage));
+                if (resultsManager.Any())
+                {
+                    errors += Environment.NewLine + string.Join(Environment.NewLine, resultsManager.Select(r => r.ErrorMessage));
+                }
+
+                MessageBox.Show("Будь ласка, виправте помилки вводу:" + Environment.NewLine + errors,
+                                "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            if (!ValidateName(ManagerNameTextBox.Text, "Ім'я керівника") ||
-                !ValidateName(ManagerSurnameTextBox.Text, "Прізвище керівника"))
-            {
-                return;
-            }
 
-            if (!ValidateBirthDate(ManagerBirthDatePicker.SelectedDate.Value))
-            {
-                return;
-            }
-
-            if (!int.TryParse(FeeTextBox.Text, out int fee) || fee <= 0)
+            if (!int.TryParse(FeeTextBox.Text, out int fee))
             {
                 MessageBox.Show("Будь ласка, введіть коректну вартість (ціле позитивне число).", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-
             if (!int.TryParse(LessonsPerMonthTextBox.Text, out int lessons))
             {
                 MessageBox.Show("Будь ласка, введіть коректну кількість занять на місяць (ціле число).", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-
-            if (!ValidateLessonsPerMonth(lessons))
-            {
-                return;
-            }
-
-            if (!int.TryParse(StudentsCountTextBox.Text, out int students) || students <= 0)
+            if (!int.TryParse(StudentsCountTextBox.Text, out int students))
             {
                 MessageBox.Show("Будь ласка, введіть коректну кількість учнів (ціле позитивне число).", "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            Manager manager = new Manager(
-                ManagerNameTextBox.Text,
-                ManagerSurnameTextBox.Text,
-                ManagerBirthDatePicker.SelectedDate.Value
-            );
-
-            if (CurrentCircle == null)
+            if (CurrentCircle.Manager == null)
             {
-                CurrentCircle = new Circle(
-                    NameTextBox.Text,
-                    (Sections)SectionComboBox.SelectedItem,
-                    manager,
-                    fee,
-                    lessons,
-                    students
+                CurrentCircle.Manager = new Manager(
+                    ManagerNameTextBox.Text,
+                    ManagerSurnameTextBox.Text,
+                    ManagerBirthDatePicker.SelectedDate.Value
                 );
             }
             else
             {
-                CurrentCircle.Name = NameTextBox.Text;
-                CurrentCircle.Section = (Sections)SectionComboBox.SelectedItem;
-                CurrentCircle.Manager = manager;
-                CurrentCircle.Fee = fee;
-                CurrentCircle.LessonsPerMonth = lessons;
-                CurrentCircle.StudentsCount = students;
+                CurrentCircle.Manager.Name = ManagerNameTextBox.Text;
+                CurrentCircle.Manager.Surname = ManagerSurnameTextBox.Text;
+                CurrentCircle.Manager.BirthDate = ManagerBirthDatePicker.SelectedDate.Value;
             }
+
+            CurrentCircle.Name = NameTextBox.Text;
+            CurrentCircle.Section = (Sections)SectionComboBox.SelectedItem;
+            CurrentCircle.Fee = fee;
+            CurrentCircle.LessonsPerMonth = lessons;
+            CurrentCircle.StudentsCount = students;
 
             DialogResult = true;
             this.Close();

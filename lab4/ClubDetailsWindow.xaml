@@ -7,6 +7,62 @@
         mc:Ignorable="d"
         Title="Деталі гуртка" Height="450" Width="400"
         WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border BorderBrush="Red" BorderThickness="1">
+                            <AdornedElementPlaceholder />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                    <Setter Property="BorderBrush" Value="Red"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="DatePicker">
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border BorderBrush="Red" BorderThickness="1">
+                            <AdornedElementPlaceholder />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                    <Setter Property="BorderBrush" Value="Red"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border BorderBrush="Red" BorderThickness="1">
+                            <AdornedElementPlaceholder />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                    <Setter Property="BorderBrush" Value="Red"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -28,28 +84,28 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="0" Text="Назва гуртка:" Margin="0,5"/>
-        <TextBox x:Name="NameTextBox" Grid.Row="0" Grid.Column="1" Margin="0,5"/>
+        <TextBox x:Name="NameTextBox" Grid.Row="0" Grid.Column="1" Margin="0,5" Text="{Binding Name, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
 
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Секція:" Margin="0,5"/>
-        <ComboBox x:Name="SectionComboBox" Grid.Row="1" Grid.Column="1" Margin="0,5"/>
+        <ComboBox x:Name="SectionComboBox" Grid.Row="1" Grid.Column="1" Margin="0,5" SelectedItem="{Binding Section, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
 
         <TextBlock Grid.Row="2" Grid.Column="0" Text="Керівник (Ім'я):" Margin="0,5"/>
-        <TextBox x:Name="ManagerNameTextBox" Grid.Row="2" Grid.Column="1" Margin="0,5"/>
+        <TextBox x:Name="ManagerNameTextBox" Grid.Row="2" Grid.Column="1" Margin="0,5" Text="{Binding Manager.Name, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
 
         <TextBlock Grid.Row="3" Grid.Column="0" Text="Керівник (Прізвище):" Margin="0,5"/>
-        <TextBox x:Name="ManagerSurnameTextBox" Grid.Row="3" Grid.Column="1" Margin="0,5"/>
+        <TextBox x:Name="ManagerSurnameTextBox" Grid.Row="3" Grid.Column="1" Margin="0,5" Text="{Binding Manager.Surname, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
 
         <TextBlock Grid.Row="4" Grid.Column="0" Text="Керівник (Дата народження):" Margin="0,5"/>
-        <DatePicker x:Name="ManagerBirthDatePicker" Grid.Row="4" Grid.Column="1" Margin="0,5"/>
+        <DatePicker x:Name="ManagerBirthDatePicker" Grid.Row="4" Grid.Column="1" Margin="0,5" SelectedDate="{Binding Manager.BirthDate, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
 
         <TextBlock Grid.Row="5" Grid.Column="0" Text="Вартість (грн):" Margin="0,5"/>
-        <TextBox x:Name="FeeTextBox" Grid.Row="5" Grid.Column="1" Margin="0,5"/>
+        <TextBox x:Name="FeeTextBox" Grid.Row="5" Grid.Column="1" Margin="0,5" Text="{Binding Fee, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
 
         <TextBlock Grid.Row="6" Grid.Column="0" Text="Занять на місяць:" Margin="0,5"/>
-        <TextBox x:Name="LessonsPerMonthTextBox" Grid.Row="6" Grid.Column="1" Margin="0,5"/>
+        <TextBox x:Name="LessonsPerMonthTextBox" Grid.Row="6" Grid.Column="1" Margin="0,5" Text="{Binding LessonsPerMonth, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
 
         <TextBlock Grid.Row="7" Grid.Column="0" Text="Кількість учнів:" Margin="0,5"/>
-        <TextBox x:Name="StudentsCountTextBox" Grid.Row="7" Grid.Column="1" Margin="0,5"/>
+        <TextBox x:Name="StudentsCountTextBox" Grid.Row="7" Grid.Column="1" Margin="0,5" Text="{Binding StudentsCount, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
 
         <StackPanel Grid.Row="11" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
             <Button Content="Зберегти" Width="80" Margin="5" Click="Save_Click"/>

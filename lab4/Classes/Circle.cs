@@ -3,16 +3,18 @@ using Lab_4.Classes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Lab_4.DTOs;
+using System.ComponentModel.DataAnnotations;
 
 namespace Lab_4.Classes
 {
-    public class Circle : INotifyPropertyChanged
+    public class Circle : INotifyPropertyChanged, IDataErrorInfo
     {
         private string _name;
         private Sections _section;
@@ -31,32 +33,39 @@ namespace Lab_4.Classes
             StudentsCount = studentsCount;
         }
 
+        [Required(ErrorMessage = "Назва гуртка є обов'язковою")]
         public string Name
         {
             get => _name;
             set { _name = value; OnPropertyChanged(nameof(Name)); }
         }
+
+        [Required(ErrorMessage = "Секція є обов'язковою.")]
         public Sections Section
         {
             get => _section;
             set { _section = value; OnPropertyChanged(nameof(Section)); }
         }
 
+        [Required(ErrorMessage = "Керівник є обов'язковим")]
         public Manager Manager
         {
             get => _manager;
             set { _manager = value; OnPropertyChanged(nameof(Manager)); }
         }
+        [Range(1, int.MaxValue, ErrorMessage = "Вартість повинна бути більше 0")]
         public int Fee
         {
             get => _fee;
             set { _fee = value; OnPropertyChanged(nameof(Fee)); }
         }
+        [Range(1, 20, ErrorMessage = "Кількість занять на місяць може бути в межах від 1 до 20")]
         public int LessonsPerMonth
         {
             get => _lessonsPerMonth;
             set { _lessonsPerMonth = value; OnPropertyChanged(nameof(LessonsPerMonth)); }
         }
+        [Range(1, int.MaxValue, ErrorMessage = "Кількість учнів повинна бути більше 0")]
         public int StudentsCount
         {
             get => _studentsCount;
@@ -103,6 +112,42 @@ namespace Lab_4.Classes
                 dto.LessonsPerMonth,
                 dto.StudentsCount
             );
+        }
+
+        public string Error
+        {
+            get
+            {
+                var results = new List<ValidationResult>();
+                var context = new ValidationContext(this);
+                Validator.TryValidateObject(this, context, results, true);
+
+                if (results.Any())
+                {
+                    return string.Join(Environment.NewLine, results.Select(r => r.ErrorMessage));
+                }
+                return null;
+            }
+        }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                var validationContext = new ValidationContext(this, null, null)
+                {
+                    MemberName = columnName
+                };
+
+                var validationResults = new List<ValidationResult>();
+                Validator.TryValidateProperty(GetType().GetProperty(columnName).GetValue(this), validationContext, validationResults);
+
+                if (validationResults.Any())
+                {
+                    return validationResults.First().ErrorMessage;
+                }
+                return null;
+            }
         }
     }
 }

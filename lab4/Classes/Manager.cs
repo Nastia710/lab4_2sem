@@ -2,13 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Lab_4.Classes
 {
-    public class Manager : INotifyPropertyChanged
+    public class Manager : INotifyPropertyChanged, IDataErrorInfo
     {
         private string _name;
         private string _surname;
@@ -21,21 +22,54 @@ namespace Lab_4.Classes
             BirthDate = birthDate;
         }
 
+        [Required(ErrorMessage = "Ім'я є обов'язковим")]
+        [RegularExpression(@"^[А-ЯІЇЄҐ][а-яіїєґ']*(?:-[А-ЯІЇЄҐ][а-яіїєґ']*)?$", 
+            ErrorMessage = "Ім'я повинно починатися з великої літери, містити тільки українські літери, може містити один апостроф на слово та один дефіс між двома словами")]
         public string Name
         {
             get => _name;
             set { _name = value; OnPropertyChanged(nameof(Name)); }
         }
+
+        [Required(ErrorMessage = "Прізвище є обов'язковим")]
+        [RegularExpression(@"^[А-ЯІЇЄҐ][а-яіїєґ']*(?:-[А-ЯІЇЄҐ][а-яіїєґ']*)?$", 
+            ErrorMessage = "Прізвище повинно починатися з великої літери, містити тільки українські літери, може містити один апостроф на слово та один дефіс між двома словами")]
         public string Surname
         {
             get => _surname;
             set { _surname = value; OnPropertyChanged(nameof(Surname)); }
         }
+
+        [Required(ErrorMessage = "Дата народження є обов'язковою")]
+        [CustomValidation(typeof(Manager), nameof(ValidateBirthDate))]
         public DateTime BirthDate
         {
             get => _birthDate;
             set { _birthDate = value; OnPropertyChanged(nameof(BirthDate)); }
         }
+
+        public static ValidationResult ValidateBirthDate(DateTime birthDate, ValidationContext context)
+        {
+            if (birthDate > DateTime.Now)
+            {
+                return new ValidationResult("Дата народження не може бути в майбутньому");
+            }
+
+            int age = DateTime.Now.Year - birthDate.Year;
+            if (birthDate.Date > DateTime.Now.AddYears(-age)) age--;
+
+            if (age < 25)
+            {
+                return new ValidationResult("Вік керівника повинен бути більшим за 25 років");
+            }
+            if (age > 95)
+            {
+                return new ValidationResult("Вік керівника не повинен бути більшим за 95 років");
+            }
+
+            return ValidationResult.Success;
+        }
+
         public string ManagerFullName => ToString();
         public override string ToString()
         {
@@ -62,6 +96,42 @@ namespace Lab_4.Classes
         {
             if (dto == null) return null;
             return new Manager(dto.Name, dto.Surname, dto.BirthDate);
+        }
+
+        public string Error
+        {
+            get
+            {
+                var results = new List<ValidationResult>();
+                var context = new ValidationContext(this);
+                Validator.TryValidateObject(this, context, results, true);
+
+                if (results.Any())
+                {
+                    return string.Join(Environment.NewLine, results.Select(r => r.ErrorMessage));
+                }
+                return null;
+            }
+        }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                var validationContext = new ValidationContext(this, null, null)
+                {
+                    MemberName = columnName
+                };
+
+                var validationResults = new List<ValidationResult>();
+                Validator.TryValidateProperty(GetType().GetProperty(columnName).GetValue(this), validationContext, validationResults);
+
+                if (validationResults.Any())
+                {
+                    return validationResults.First().ErrorMessage;
+                }
+                return null;
+            }
         }
     }
 }
