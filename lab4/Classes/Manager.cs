@@ -7,9 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Lab_4.Classes
 {
-    public class Manager : INotifyPropertyChanged, IDataErrorInfo
+    public class Manager : BaseValidationViewModel
     {
         private string _name;
         private string _surname;
@@ -75,14 +76,6 @@ namespace Lab_4.Classes
         {
             return $"{Name} {Surname}, {BirthDate:dd.MM.yyyy}";
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ToString)));
-        }
         public ManagerDTO ToDTO()
         {
             return new ManagerDTO
@@ -96,42 +89,6 @@ namespace Lab_4.Classes
         {
             if (dto == null) return null;
             return new Manager(dto.Name, dto.Surname, dto.BirthDate);
-        }
-
-        public string Error
-        {
-            get
-            {
-                var results = new List<ValidationResult>();
-                var context = new ValidationContext(this);
-                Validator.TryValidateObject(this, context, results, true);
-
-                if (results.Any())
-                {
-                    return string.Join(Environment.NewLine, results.Select(r => r.ErrorMessage));
-                }
-                return null;
-            }
-        }
-
-        public string this[string columnName]
-        {
-            get
-            {
-                var validationContext = new ValidationContext(this, null, null)
-                {
-                    MemberName = columnName
-                };
-
-                var validationResults = new List<ValidationResult>();
-                Validator.TryValidateProperty(GetType().GetProperty(columnName).GetValue(this), validationContext, validationResults);
-
-                if (validationResults.Any())
-                {
-                    return validationResults.First().ErrorMessage;
-                }
-                return null;
-            }
         }
     }
 }

@@ -13,12 +13,6 @@ namespace Lab_4
     /// </summary>
     public partial class ClubDetailsWindow : Window
     {
-        /*private const string nameReg = @"^[А-ЯІЇЄҐ][а-яіїєґ']*(?:-[А-ЯІЇЄҐ][а-яіїєґ']*)?$";
-        private const int minAge = 25;
-        private const int maxAge = 95;
-        private const int minLessons = 1;
-        private const int maxLessons = 20;*/
-
         public Circle CurrentCircle { get; private set; }
 
         public ClubDetailsWindow()
@@ -46,45 +40,11 @@ namespace Lab_4
 
         private void LoadCircleData(Circle circle)
         {
-            /*NameTextBox.Text = circle.Name;
-            SectionComboBox.SelectedItem = circle.Section;
-            FeeTextBox.Text = circle.Fee.ToString();
-            LessonsPerMonthTextBox.Text = circle.LessonsPerMonth.ToString();
-            StudentsCountTextBox.Text = circle.StudentsCount.ToString();
-
-            if (circle.Manager != null)
-            {
-                ManagerNameTextBox.Text = circle.Manager.Name;
-                ManagerSurnameTextBox.Text = circle.Manager.Surname;
-                ManagerBirthDatePicker.SelectedDate = circle.Manager.BirthDate;
-            }
-            else
-            {
-                ManagerNameTextBox.Text = string.Empty;
-                ManagerSurnameTextBox.Text = string.Empty;
-                ManagerBirthDatePicker.SelectedDate = null;
-            }*/
-
             if (circle.Manager == null)
             {
                 circle.Manager = new Manager("", "", DateTime.Now);
             }
         }
-
-        /*private bool ValidateModel(object model)
-        {
-            var results = new List<ValidationResult>();
-            var context = new ValidationContext(model);
-            if (!Validator.TryValidateObject(model, context, results, true))
-            {
-                foreach (var error in results)
-                {
-                    MessageBox.Show(error.ErrorMessage, "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                return false;
-            }
-            return true;
-        }*/
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {

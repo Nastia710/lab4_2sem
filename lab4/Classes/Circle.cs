@@ -14,7 +14,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Lab_4.Classes
 {
-    public class Circle : INotifyPropertyChanged, IDataErrorInfo
+    public class Circle : BaseValidationViewModel
     {
         private string _name;
         private Sections _section;
@@ -34,20 +34,20 @@ namespace Lab_4.Classes
         }
 
         [Required(ErrorMessage = "Назва гуртка є обов'язковою")]
+        [RegularExpression(@"^[А-ЯІЇЄҐ][а-яіїєґ'\s]*(?:-[А-ЯІЇЄҐ][а-яіїєґ'\s]*)?$",
+            ErrorMessage = "Назва гуртка повинна починатися з великої літери та містити тільки українські літери, пробіли, апострофи або дефіси.")]
+        [Length(5,30, ErrorMessage = "Назва гуртка повинна мати від 5 до 30 символів")]
         public string Name
         {
             get => _name;
             set { _name = value; OnPropertyChanged(nameof(Name)); }
         }
 
-        [Required(ErrorMessage = "Секція є обов'язковою.")]
         public Sections Section
         {
             get => _section;
             set { _section = value; OnPropertyChanged(nameof(Section)); }
         }
-
-        [Required(ErrorMessage = "Керівник є обов'язковим")]
         public Manager Manager
         {
             get => _manager;
@@ -65,7 +65,6 @@ namespace Lab_4.Classes
             get => _lessonsPerMonth;
             set { _lessonsPerMonth = value; OnPropertyChanged(nameof(LessonsPerMonth)); }
         }
-        [Range(1, int.MaxValue, ErrorMessage = "Кількість учнів повинна бути більше 0")]
         public int StudentsCount
         {
             get => _studentsCount;
@@ -79,13 +78,6 @@ namespace Lab_4.Classes
                    $"Оплата: {Fee} грн" + Environment.NewLine +
                    $"Занять на місяць: {LessonsPerMonth}" + Environment.NewLine +
                    $"Кількість учнів: {StudentsCount}";
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ToString)));
         }
 
         public CircleDTO ToDTO()
@@ -112,42 +104,6 @@ namespace Lab_4.Classes
                 dto.LessonsPerMonth,
                 dto.StudentsCount
             );
-        }
-
-        public string Error
-        {
-            get
-            {
-                var results = new List<ValidationResult>();
-                var context = new ValidationContext(this);
-                Validator.TryValidateObject(this, context, results, true);
-
-                if (results.Any())
-                {
-                    return string.Join(Environment.NewLine, results.Select(r => r.ErrorMessage));
-                }
-                return null;
-            }
-        }
-
-        public string this[string columnName]
-        {
-            get
-            {
-                var validationContext = new ValidationContext(this, null, null)
-                {
-                    MemberName = columnName
-                };
-
-                var validationResults = new List<ValidationResult>();
-                Validator.TryValidateProperty(GetType().GetProperty(columnName).GetValue(this), validationContext, validationResults);
-
-                if (validationResults.Any())
-                {
-                    return validationResults.First().ErrorMessage;
-                }
-                return null;
-            }
         }
     }
 }

@@ -12,6 +12,5 @@ namespace Lab_4.DTOs
     {
         public string Address { get; set; }
         public List<CircleDTO> Circles { get; set; } = new List<CircleDTO>();
-        public YouthCreativityCenterDTO() { }
     }
 }

@@ -15,6 +15,5 @@ namespace Lab_4.DTOs
         public int Fee { get; set; }
         public int LessonsPerMonth { get; set; }
         public int StudentsCount { get; set; }
-        public CircleDTO() { }
     }
 }
