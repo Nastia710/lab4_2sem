@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lab_4.DTOs;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -48,6 +49,19 @@ namespace Lab_4.Classes
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ToString)));
         }
-
+        public ManagerDTO ToDTO()
+        {
+            return new ManagerDTO
+            {
+                Name = this.Name,
+                Surname = this.Surname,
+                BirthDate = this.BirthDate
+            };
+        }
+        public static Manager FromDTO(ManagerDTO dto)
+        {
+            if (dto == null) return null;
+            return new Manager(dto.Name, dto.Surname, dto.BirthDate);
+        }
     }
 }

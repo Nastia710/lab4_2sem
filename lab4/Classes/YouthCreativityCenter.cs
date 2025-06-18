@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lab_4.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -14,10 +15,13 @@ namespace Lab_4.Classes
     {
         private string _address;
         private ObservableCollection<Circle> _circles;
-        public YouthCreativityCenter(string address)
+        public YouthCreativityCenter()
+        {
+            Circles = new ObservableCollection<Circle>();
+        }
+        public YouthCreativityCenter(string address) : this()
         {
             Address = address;
-            Circles = new ObservableCollection<Circle>();
         }
 
         public string Address
@@ -80,6 +84,25 @@ namespace Lab_4.Classes
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ToString)));
+        }
+        public YouthCreativityCenterDTO ToDTO()
+        {
+            return new YouthCreativityCenterDTO
+            {
+                Address = this.Address,
+                Circles = this.Circles.Select(c => c.ToDTO()).ToList()
+            };
+        }
+
+        public static YouthCreativityCenter FromDTO(YouthCreativityCenterDTO dto)
+        {
+            if (dto == null) return null;
+            var center = new YouthCreativityCenter(dto.Address);
+            foreach (var circleDto in dto.Circles)
+            {
+                center.AddClub(Circle.FromDTO(circleDto));
+            }
+            return center;
         }
     }
 }

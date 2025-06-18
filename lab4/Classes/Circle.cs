@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Lab_4.DTOs;
 
 namespace Lab_4.Classes
 {
@@ -63,7 +64,12 @@ namespace Lab_4.Classes
         }
         public override string ToString()
         {
-            return $"Назва гуртка: {Name} Секція: {Section} Керівник: {Manager} Оплата: {Fee} грн Занять на місяць: {LessonsPerMonth} Кількість учнів: {StudentsCount}";
+            return $"Назва гуртка: {Name}" + Environment.NewLine +
+                   $"Секція: {Section}" + Environment.NewLine +
+                   $"Керівник: {Manager}" + Environment.NewLine +
+                   $"Оплата: {Fee} грн" + Environment.NewLine +
+                   $"Занять на місяць: {LessonsPerMonth}" + Environment.NewLine +
+                   $"Кількість учнів: {StudentsCount}";
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -71,6 +77,32 @@ namespace Lab_4.Classes
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ToString)));
+        }
+
+        public CircleDTO ToDTO()
+        {
+            return new CircleDTO
+            {
+                Name = this.Name,
+                Section = this.Section,
+                Manager = this.Manager?.ToDTO(),
+                Fee = this.Fee,
+                LessonsPerMonth = this.LessonsPerMonth,
+                StudentsCount = this.StudentsCount
+            };
+        }
+
+        public static Circle FromDTO(CircleDTO dto)
+        {
+            if (dto == null) return null;
+            return new Circle(
+                dto.Name,
+                dto.Section,
+                Manager.FromDTO(dto.Manager),
+                dto.Fee,
+                dto.LessonsPerMonth,
+                dto.StudentsCount
+            );
         }
     }
 }

@@ -28,9 +28,10 @@
 
         <!-- Кнопки -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="Додати" Width="100" Margin="5" Click="Add_Click" Height="25"/>
-            <Button Content="Редагувати" Width="100" Margin="5" Click="Edit_Click"/>
-            <Button Content="Видалити" Width="100" Margin="5" Click="Delete_Click"/>
+            <Button x:Name="Add" Content="Додати" Width="100" Margin="5" Click="Add_Click" Height="25"/>
+            <Button x:Name="Edit" Content="Редагувати" Width="100" Margin="5" Click="Edit_Click"/>
+            <Button x:Name="Delete" Content="Видалити" Width="100" Margin="5" Click="Delete_Click"/>
+            <Button x:Name="View" Content="Інформація" Width="100" Margin="5" Click="View_Click"/>
         </StackPanel>
     </Grid>
 </Window>

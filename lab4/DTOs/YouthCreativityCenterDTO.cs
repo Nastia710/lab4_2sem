@@ -10,7 +10,8 @@ namespace Lab_4.DTOs
 {
     public class YouthCreativityCenterDTO
     {
-        public string Addres { get; set; }
-        public ObservableCollection<CircleDTO> Circles { get; set; } = new ObservableCollection<CircleDTO>();
+        public string Address { get; set; }
+        public List<CircleDTO> Circles { get; set; } = new List<CircleDTO>();
+        public YouthCreativityCenterDTO() { }
     }
 }

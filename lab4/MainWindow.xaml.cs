@@ -10,7 +10,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Lab_4.Enum;
-using Lab_4.Classes;
 using lab4;
 
 namespace Lab_4
@@ -25,11 +24,33 @@ namespace Lab_4
         public MainWindow()
         {
             InitializeComponent();
-            InitializeData();
+
+            _center = App.LoadYouthCenterData();
             ClubsListView.ItemsSource = _center.Circles;
+
+            UpdateButtonVisibility();
+
+            ClubsListView.SelectionChanged += ClubsListView_SelectionChanged;
+
+            this.Closing += MainWindow_Closing;
         }
 
-        private void InitializeData()
+        private void ClubsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateButtonVisibility();
+        }
+
+        private void UpdateButtonVisibility()
+        {
+            bool isItemSelected = ClubsListView.SelectedItem != null;
+            Add.Visibility = Visibility.Visible;
+            
+            Edit.Visibility = isItemSelected ? Visibility.Visible : Visibility.Collapsed;
+            Delete.Visibility = isItemSelected ? Visibility.Visible : Visibility.Collapsed;
+            View.Visibility = isItemSelected ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        /*private void InitializeData()
         {
             _center = new YouthCreativityCenter("Вул. Свободи, 10");
 
@@ -41,7 +62,7 @@ namespace Lab_4
             _center.AddClub(new Circle("Сучасні танці", Sections.Dance, manager2, 450, 12, 25));
             _center.AddClub(new Circle("Авіамоделювання", Sections.Modeling, manager3, 250, 6, 10));
             _center.AddClub(new Circle("Вишивка", Sections.SoftToys, manager2, 200, 7, 20));
-        }
+        }*/
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
@@ -64,6 +85,7 @@ namespace Lab_4
                 if (detailsWindow.ShowDialog() == true)
                 {
                     MessageBox.Show("Гурток успішно відредаговано!", "Редагування гуртка", MessageBoxButton.OK, MessageBoxImage.Information);
+                    ClubsListView.Items.Refresh();
                 }
             }
             else
@@ -93,6 +115,24 @@ namespace Lab_4
             {
                 MessageBox.Show("Будь ласка, оберіть гурток для видалення.", "Видалити гурток", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
+
+        private void View_Click(object sender, RoutedEventArgs e)
+        {
+            if (ClubsListView.SelectedItem is Circle selectedCircle)
+            {
+                ClubInfoViewWindow infoWindow = new ClubInfoViewWindow(selectedCircle);
+
+                infoWindow.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Будь ласка, оберіть гурток для перегляду інформації.", "Перегляд інформації", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            App.SaveYouthCenterData(_center);
         }
     }
 }
